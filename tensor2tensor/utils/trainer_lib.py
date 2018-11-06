@@ -401,13 +401,15 @@ class T2TExperiment(object):
   """Custom Experiment class for running distributed experiments."""
 
   def __init__(self, estimator, hparams, train_spec, eval_spec,
-               use_validation_monitor, decode_hparams=None):
+               use_validation_monitor, decode_hparams=None,
+               server=None):
     self._train_spec = train_spec
     self._eval_spec = eval_spec
     self._hparams = hparams
     self._decode_hparams = decode_hparams
     self._estimator = estimator
     self._use_validation_monitor = use_validation_monitor
+    self._server = server
 
   @property
   def estimator(self):
@@ -761,7 +763,8 @@ def create_experiment(
       exporters=exporter)
 
   return T2TExperiment(estimator, hparams, train_spec, eval_spec,
-                       use_validation_monitor, decode_hparams)
+                       use_validation_monitor, decode_hparams,
+                       server)
 
 def create_experiment_fn(*args, **kwargs):
   """Wrapper for canonical experiment_fn. See create_experiment."""
