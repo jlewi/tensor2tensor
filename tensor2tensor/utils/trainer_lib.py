@@ -604,6 +604,16 @@ class T2TExperiment(object):
     for _ in next_checkpoint(self._hparams.model_dir):
       self.decode(decode_from_file=True)
 
+def create_tf_server(config):
+  tf.logging.info("task_type=%s", config.task_type,
+               "task_id=%d", config.task_id)
+  server = tf.train.Server(
+    config.cluster_spec,
+    job_name=config.task_type,
+    task_index=config.task_id,
+    config=config.tf_config,
+    start=True)
+  return server
 
 def create_experiment(
     run_config,
@@ -650,6 +660,10 @@ def create_experiment(
     decode_hparams.add_hparam("decode_reference", decode_reference)
   add_problem_hparams(hparams, problem_name)
 
+  server = None
+  if (getattr(run_config, "cluster_spec") and
+      schedule != "run_std_server"):
+    server = create_tf_server(run_config)
   # Estimator
   estimator = create_estimator(
       model_name,
@@ -748,7 +762,6 @@ def create_experiment(
 
   return T2TExperiment(estimator, hparams, train_spec, eval_spec,
                        use_validation_monitor, decode_hparams)
-
 
 def create_experiment_fn(*args, **kwargs):
   """Wrapper for canonical experiment_fn. See create_experiment."""
