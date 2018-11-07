@@ -403,6 +403,7 @@ class T2TExperiment(object):
   def __init__(self, estimator, hparams, train_spec, eval_spec,
                use_validation_monitor, decode_hparams=None,
                server=None):
+    print("DO NOT SUBMIT T2TExperiment: server=%s", server)
     self._train_spec = train_spec
     self._eval_spec = eval_spec
     self._hparams = hparams
@@ -410,7 +411,6 @@ class T2TExperiment(object):
     self._estimator = estimator
     self._use_validation_monitor = use_validation_monitor
     self._server = server
-
   @property
   def estimator(self):
     return self._estimator
@@ -663,7 +663,7 @@ def create_experiment(
     decode_hparams.add_hparam("decode_to_file", decode_to_file)
     decode_hparams.add_hparam("decode_reference", decode_reference)
   add_problem_hparams(hparams, problem_name)
-
+  print("DO NOT SUBMIT: create_experiment")
   server = None
   if (getattr(run_config, "cluster_spec") and
       schedule != "run_std_server"):
