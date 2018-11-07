@@ -607,8 +607,10 @@ class T2TExperiment(object):
       self.decode(decode_from_file=True)
 
 def create_tf_server(config):
-  tf.logging.info("task_type=%s", config.task_type,
-               "task_id=%d", config.task_id)
+  tf.logging.info("task_type=%s task_id=%s creating tf server",
+                   config.task_type, config.task_id)
+  print("task_type={0} task_id={1} creating tf server".format(
+        config.task_type, config.task_id))
   server = tf.train.Server(
     config.cluster_spec,
     job_name=config.task_type,
